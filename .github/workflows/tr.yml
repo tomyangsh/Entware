@@ -20,6 +20,6 @@ jobs:
 
       - name: push
         run: |
-          git add bin/targets/armv7-3.2/generic-glibc/*
+          git add bin/targets/armv7-3.2/generic-glibc/packages/*
           git commit -m "tr: update"
           git push
