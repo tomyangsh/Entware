@@ -1,0 +1,22 @@
+name: build transmission
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          make V=sc toolchian/install
+          make V=sc package/transmission/compile
+          make V=sc package/index
+
+      - name: push
+        run: |
+          git add bin/targets/armv7-3.2/generic-glibc/*
+          git commit -m "tr: update"
+          git push
