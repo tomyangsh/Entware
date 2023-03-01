@@ -12,9 +12,12 @@ jobs:
         with:
           python-version: '2.7'
 
-      - name: build
+      - name: prepare
         run: |
           make V=sc toolchain/install
+
+      - name: build
+        run: |
           make V=sc package/transmission/compile
           make V=sc package/index
 
