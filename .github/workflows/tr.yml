@@ -14,7 +14,7 @@ jobs:
 
       - name: build
         run: |
-          make V=sc toolchian/install
+          make V=sc toolchain/install
           make V=sc package/transmission/compile
           make V=sc package/index
 
