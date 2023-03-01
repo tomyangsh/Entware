@@ -1,0 +1,8 @@
+--- a/lib/snmp/bin/snmpc
++++ b/lib/snmp/bin/snmpc
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env escript
++#!/opt/bin/escript
+ %% -*- erlang -*-
+ %%
+ %% %CopyrightBegin%

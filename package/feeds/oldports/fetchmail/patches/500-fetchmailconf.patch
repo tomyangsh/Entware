@@ -1,0 +1,11 @@
+by  <Hector Garcia <hector@debian.org>>
+
+Remove header from fetchmailconf.py since it is a library.
+--- a/fetchmailconf.py
++++ b/fetchmailconf.py
+@@ -1,5 +1,3 @@
+-#!/usr/bin/env python
+-#
+ # A GUI configurator for generating fetchmail configuration files.
+ # by Eric S. Raymond, <esr@snark.thyrsus.com>,
+ # Matthias Andree <matthias.andree@gmx.de>

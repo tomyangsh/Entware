@@ -1,0 +1,11 @@
+--- a/crawl-ref/source/rltiles/Makefile
++++ b/crawl-ref/source/rltiles/Makefile
+@@ -52,7 +52,7 @@ ifeq ($(uname_S),Darwin)
+ LDFLAGS += -framework AppKit -framework AudioUnit -framework CoreAudio -framework ForceFeedback -framework Carbon -framework IOKit -framework OpenGL
+ endif
+ ifeq ($(uname_S),Linux)
+-LDFLAGS += -ldl -lpthread
++LDFLAGS := -ldl -lpthread
+ endif
+ 
+ # Attempt to use a full compiler name, to make

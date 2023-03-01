@@ -1,0 +1,15 @@
+From: Ludovic Rousseau <rousseau at debian dot org>
+Subject: A patch for fixing wrong memory intialization
+
+
+--- a/src/rcfile.c
++++ b/src/rcfile.c
+@@ -260,7 +260,7 @@ int rcfile_read(struct site **sites)
+ 		if (this_site != &default_site)
+ 		    last_site = this_site;
+ 		/* Allocate new item */
+-		this_site = ne_malloc(sizeof(struct site));
++		this_site = ne_calloc(sizeof(struct site));
+ 		/* Copy over the defaults */
+ 		memcpy(this_site, &default_site, sizeof(struct site));
+ 		/* Deep-copy the string lists */

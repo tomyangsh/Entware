@@ -1,0 +1,252 @@
+--- a/addons/res_config_mysql.c
++++ b/addons/res_config_mysql.c
+@@ -1275,7 +1275,7 @@ static int load_mysql_config(struct ast_
+ 
+ 	if (!(s = ast_variable_retrieve(config, category, "dbsock"))) {
+ 		if (ast_strlen_zero(conn->host)) {
+-			char *paths[3] = { "/tmp/mysql.sock", "/var/lib/mysql/mysql.sock", "/var/run/mysqld/mysqld.sock" };
++			char *paths[3] = { "/opt/var/run/mysqld/mysqld.sock", "/opt/var/lib/mysql/mysql.sock", "/opt/tmp/mysql.sock" };
+ 			struct stat st;
+ 			int i;
+ 			for (i = 0; i < 3; i++) {
+--- a/apps/app_minivm.c
++++ b/apps/app_minivm.c
+@@ -538,7 +538,7 @@
+ 
+ /*! \brief Default mail command to mail voicemail. Change it with the
+     mailcmd= command in voicemail.conf */
+-#define SENDMAIL "/usr/sbin/sendmail -t"
++#define SENDMAIL "/opt/sbin/sendmail -t"
+ 
+ #define SOUND_INTRO		"vm-intro"
+ #define EOL			"\r\n"
+--- a/apps/app_mp3.c
++++ b/apps/app_mp3.c
+@@ -49,7 +49,7 @@
+ #include "asterisk/format_cache.h"
+ 
+ #define LOCAL_MPG_123 "/usr/local/bin/mpg123"
+-#define MPG_123 "/usr/bin/mpg123"
++#define MPG_123 "/opt/bin/mpg123"
+ 
+ /*** DOCUMENTATION
+ 	<application name="MP3Player" language="en_US">
+--- a/apps/app_voicemail.c
++++ b/apps/app_voicemail.c
+@@ -532,7 +532,7 @@ static AST_LIST_HEAD_STATIC(vmstates, vm
+ 
+ /* Default mail command to mail voicemail. Change it with the
+  * mailcmd= command in voicemail.conf */
+-#define SENDMAIL "/usr/sbin/sendmail -t"
++#define SENDMAIL "/opt/sbin/sendmail -t"
+ #define INTRO "vm-intro"
+ 
+ #define MAX_MAIL_BODY_CONTENT_SIZE 134217728L // 128 Mbyte
+--- a/cdr/cdr_radius.c
++++ b/cdr/cdr_radius.c
+@@ -86,9 +86,9 @@ static const char name[] = "radius";
+ static const char cdr_config[] = "cdr.conf";
+ 
+ #ifdef FREERADIUS_CLIENT
+-static char radiuscfg[PATH_MAX] = "/etc/radiusclient/radiusclient.conf";
++static char radiuscfg[PATH_MAX] = "/opt/etc/radiusclient/radiusclient.conf";
+ #else
+-static char radiuscfg[PATH_MAX] = "/etc/radiusclient-ng/radiusclient.conf";
++static char radiuscfg[PATH_MAX] = "/opt/etc/radiusclient-ng/radiusclient.conf";
+ #endif
+ 
+ static struct ast_flags global_flags = { RADIUS_FLAG_USEGMTIME | RADIUS_FLAG_LOGUNIQUEID | RADIUS_FLAG_LOGUSERFIELD };
+--- a/cel/cel_radius.c
++++ b/cel/cel_radius.c
+@@ -76,9 +76,9 @@ enum {
+ static char *cel_config = "cel.conf";
+ 
+ #ifdef FREERADIUS_CLIENT
+-static char radiuscfg[PATH_MAX] = "/etc/radiusclient/radiusclient.conf";
++static char radiuscfg[PATH_MAX] = "/opt/etc/radiusclient/radiusclient.conf";
+ #else
+-static char radiuscfg[PATH_MAX] = "/etc/radiusclient-ng/radiusclient.conf";
++static char radiuscfg[PATH_MAX] = "/opt/etc/radiusclient-ng/radiusclient.conf";
+ #endif
+ 
+ static struct ast_flags global_flags = { RADIUS_FLAG_USEGMTIME | RADIUS_FLAG_LOGUNIQUEID | RADIUS_FLAG_LOGUSERFIELD };
+--- a/channels/chan_alsa.c
++++ b/channels/chan_alsa.c
+@@ -1021,7 +1021,7 @@ static int load_module(void)
+ 
+ 	if (soundcard_init() < 0) {
+ 		ast_verb(2, "No sound card detected -- console channel will be unavailable\n");
+-		ast_verb(2, "Turn off ALSA support by adding 'noload=chan_alsa.so' in /etc/asterisk/modules.conf\n");
++		ast_verb(2, "Turn off ALSA support by adding 'noload=chan_alsa.so' in /opt/etc/asterisk/modules.conf\n");
+ 		unload_module();
+ 
+ 		return AST_MODULE_LOAD_DECLINE;
+--- a/main/config.c
++++ b/main/config.c
+@@ -2006,7 +2006,7 @@ static int process_text_line(struct ast_
+ 
+ 			if (!ast_test_flag(&flags, CONFIG_FLAG_NOCACHE))
+ 				config_cache_attribute(configfile, ATTRIBUTE_EXEC, NULL, who_asked);
+-			snprintf(exec_file, sizeof(exec_file), "/var/tmp/exec.%d%d.%ld", (int)now.tv_sec, (int)now.tv_usec, (long)pthread_self());
++			snprintf(exec_file, sizeof(exec_file), "/opt/tmp/exec.%d%d.%ld", (int)now.tv_sec, (int)now.tv_usec, (long)pthread_self());
+ 			if (snprintf(cmd, sizeof(cmd), "%s > %s 2>&1", cur, exec_file) >= sizeof(cmd)) {
+ 				ast_log(LOG_ERROR, "Failed to construct command string to execute %s.\n", cur);
+ 
+--- a/main/stdtime/localtime.c
++++ b/main/stdtime/localtime.c
+@@ -337,7 +337,7 @@ static void common_startup(void) {
+ 		if (sp->name[0] == '/') {
+ 			snprintf(name, sizeof(name), "%s", sp->name);
+ 		} else if (!strcmp(sp->name, TZDEFAULT)) {
+-			snprintf(name, sizeof(name), "/etc/%s", sp->name);
++			snprintf(name, sizeof(name), "/opt/etc/%s", sp->name);
+ 		} else {
+ 			snprintf(name, sizeof(name), "%s/%s", TZDIR, sp->name);
+ 		}
+@@ -1609,7 +1609,7 @@ static const struct state *ast_tzset(con
+ 			zone = "GMT";
+ 		}
+ #else
+-		zone = "/etc/localtime";
++		zone = "/opt/etc/localtime";
+ #endif
+ 	}
+ 
+--- a/main/stdtime/private.h
++++ b/main/stdtime/private.h
+@@ -73,7 +73,7 @@ static char	__attribute__((unused)) priv
+ #endif /* !defined HAVE_UTMPX_H */
+ 
+ #ifndef LOCALE_HOME
+-#define LOCALE_HOME		"/usr/lib/locale"
++#define LOCALE_HOME		"/opt/usr/lib/locale"
+ #endif /* !defined LOCALE_HOME */
+ 
+ #if HAVE_INCOMPATIBLE_CTIME_R
+--- a/main/stdtime/tzfile.h
++++ b/main/stdtime/tzfile.h
+@@ -33,7 +33,7 @@ static char	__attribute__((unused)) tzfi
+ #ifdef SOLARIS
+ #define TZDIR	"/usr/share/lib/zoneinfo"
+ #else
+-#define TZDIR	"/usr/share/zoneinfo"
++#define TZDIR	"/opt/share/zoneinfo"
+ #endif /* defined SOLARIS */
+ #endif /* !defined TZDIR */
+ 
+--- a/main/term.c
++++ b/main/term.c
+@@ -46,9 +46,9 @@ static char enddata[80] = "";
+ static char quitdata[80] = "";
+ 
+ static const char * const termpath[] = {
+-	"/usr/share/terminfo",
+-	"/usr/local/share/misc/terminfo",
+-	"/usr/lib/terminfo",
++	"/opt/share/terminfo",
++	"/opt/share/misc/terminfo",
++	"/opt/lib/terminfo",
+ 	NULL
+ 	};
+ 
+--- a/pbx/pbx_config.c
++++ b/pbx/pbx_config.c
+@@ -824,7 +824,7 @@ static char *handle_cli_dialplan_save(st
+ 			"Usage: dialplan save [/path/to/extension/file]\n"
+ 			"       Save dialplan created by pbx_config module.\n"
+ 			"\n"
+-			"Example: dialplan save                 (/etc/asterisk/extensions.conf)\n"
++			"Example: dialplan save                 (/opt/etc/asterisk/extensions.conf)\n"
+ 			"         dialplan save /home/markster  (/home/markster/extensions.conf)\n";
+ 		return NULL;
+ 	case CLI_GENERATE:
+--- a/res/res_musiconhold.c
++++ b/res/res_musiconhold.c
+@@ -208,7 +208,7 @@ struct mohdata {
+ static struct ao2_container *mohclasses;
+ 
+ #define LOCAL_MPG_123 "/usr/local/bin/mpg123"
+-#define MPG_123 "/usr/bin/mpg123"
++#define MPG_123 "/opt/bin/mpg123"
+ #define MAX_MP3S 256
+ 
+ static void moh_parse_options(struct ast_variable *var, struct mohclass *mohclass);
+--- a/tests/test_locale.c
++++ b/tests/test_locale.c
+@@ -82,7 +82,7 @@ static char *handle_cli_test_locales(str
+ #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined( __NetBSD__ ) || defined(__APPLE__)
+ 		"/usr/share/locale"
+ #else /* Linux */
+-		"/usr/lib/locale"
++		"/opt/usr/lib/locale"
+ #endif
+ 		))) {
+ 		ast_cli(a->fd, "No locales seem to exist on this platform.\n");
+--- a/tests/test_time.c
++++ b/tests/test_time.c
+@@ -41,7 +41,7 @@
+ #ifdef SOLARIS
+ #define TZDIR	"/usr/share/lib/zoneinfo"
+ #else
+-#define TZDIR	"/usr/share/zoneinfo"
++#define TZDIR	"/opt/share/zoneinfo"
+ #endif /* defined SOLARIS */
+ #endif /* !defined TZDIR */
+ 
+--- a/utils/ael_main.c
++++ b/utils/ael_main.c
+@@ -522,10 +522,10 @@ int main(int argc, char **argv)
+ 		localized_use_local_dir();
+ 	}
+ 	else {
+-		strcpy(config_dir, "/etc/asterisk");
++		strcpy(config_dir, "/opt/etc/asterisk");
+ 		localized_use_conf_dir();
+ 	}
+-	strcpy(var_dir, "/var/lib/asterisk");
++	strcpy(var_dir, "/opt/var/lib/asterisk");
+ 
+ 	if( dump_extensions ) {
+ 		dumpfile = fopen("extensions.conf.aeldump","w");
+--- a/utils/astdb2bdb.c
++++ b/utils/astdb2bdb.c
+@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
+ 		fprintf(stderr, "%s takes the path of SQLite3 astdb as its only argument\n", basename(argv[0]));
+ 		fprintf(stderr, "and will produce a file 'astdb' in the current directory\n"
+ 				"Make a backup of any existing Berkeley DB astdb you have and copy\n"
+-				"the new astdb to its location: often /var/lib/asterisk/astdb\n");
++				"the new astdb to its location: often /opt/var/lib/asterisk/astdb\n");
+ 		exit(-1);
+ 	}
+ 
+@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
+ 	}
+ 
+ 	printf("Created ./astdb. Back up any existing astdb and copy the created\n");
+-	printf("astdb file to the original's location. Often /var/lib/asterisk/astdb.\n");
++	printf("astdb file to the original's location. Often /opt/var/lib/asterisk/astdb.\n");
+ 
+ 	sqlite3_close(sql3db);
+ 	return 0;
+--- a/utils/extconf.c
++++ b/utils/extconf.c
+@@ -3025,7 +3025,7 @@ static int process_text_line(struct ast_
+ 				if (do_exec) {
+ 					char cmd[1024];
+ 
+-					snprintf(exec_file, sizeof(exec_file), "/var/tmp/exec.%d.%ld", (int)time(NULL), (long)pthread_self());
++					snprintf(exec_file, sizeof(exec_file), "/opt/tmp/exec.%d.%ld", (int)time(NULL), (long)pthread_self());
+ 					if (snprintf(cmd, sizeof(cmd), "%s > %s 2>&1", cur, exec_file) >= sizeof(cmd)) {
+ 						ast_log(LOG_ERROR, "Failed to construct command string to execute %s.\n", cur);
+ 
+--- a/utils/smsq.c
++++ b/utils/smsq.c
+@@ -443,7 +443,7 @@ main (int argc, const char *argv[])
+       *queue = "",
+       *udfile = 0,
+       *process = 0,
+-      *spooldir = "/var/spool/asterisk",
++      *spooldir = "/opt/var/spool/asterisk",
+       *motxchannel = "Local/1709400X",
+       *motxcallerid = 0,
+       *mttxchannel = 0,

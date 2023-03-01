@@ -1,0 +1,11 @@
+--- a/cmake/compilerFlags.cmake
++++ b/cmake/compilerFlags.cmake
+@@ -22,7 +22,7 @@ if ( MINGW OR UNIX OR MSYS ) # MINGW, Li
+     endif()
+ 
+ 
+-    if (COMPILER_IS_GCC OR COMPILER_IS_CLANG)
++    if (False)
+         # This fails under Fedora - MinGW - Gcc 8.3
+         if (NOT (MINGW OR CYGWIN OR CMAKE_HOST_SOLARIS))
+             if (NOT APPLE) # Don't know why this isn't working correctly on Apple with M1 processor

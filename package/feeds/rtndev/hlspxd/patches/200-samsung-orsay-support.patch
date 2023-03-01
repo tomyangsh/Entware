@@ -1,0 +1,82 @@
+From 1c4ced0f8a982f77f942d642d2b7bfa4ed576414 Mon Sep 17 00:00:00 2001
+From: Julius Schwartzenberg <julius.schwartzenberg@gmail.com>
+Date: Thu, 30 May 2019 18:04:31 +0200
+Subject: [PATCH 1/2] HTTP HEAD method support
+
+Samsung Orsay TVs (from 2014) require this, tested on H5570.
+---
+ hlspxd/utils.cpp       | 3 ++-
+ hlspxd/utils.h         | 2 ++
+ hlspxd/videoviewer.cpp | 6 ++++++
+ hlspxd/videoviewer.h   | 1 +
+ 4 files changed, 11 insertions(+), 1 deletion(-)
+
+--- a/utils.cpp
++++ b/utils.cpp
+@@ -212,7 +212,7 @@ const std::string *HttpMessage::getHeade
+ 	return &(it->second);
+ }
+ 
+-std::regex HttpRequest::reqRx("(GET|get)[[:space:]]+([^[:space:]]+)[[:space:]]+(.+)");
++std::regex HttpRequest::reqRx("(GET|get|HEAD|head)[[:space:]]+([^[:space:]]+)[[:space:]]+(.+)");
+ 
+ HttpRequest::HttpRequest(istream& stream)
+ {
+@@ -227,6 +227,7 @@ HttpRequest::HttpRequest(istream& stream
+ 
+ 	if (!regex_search(inStr.c_str(), res, reqRx)) throw Exception("bad request");
+ 
++	_method = res[1].str();
+ 	_path = res[2].str();
+ 
+ 	HttpMessage::init(stream);
+--- a/utils.h
++++ b/utils.h
+@@ -314,9 +314,11 @@ public:
+ class HttpRequest : public HttpMessage
+ {
+ 	static std::regex reqRx;
++	std::string _method;
+ 	std::string _path;
+ public:
+ 	HttpRequest(std::istream& stream);
++	inline std::string &getMethod(){ return _method; }
+ 	inline std::string &getPath(){ return _path; }
+ };
+ 
+--- a/videoviewer.cpp
++++ b/videoviewer.cpp
+@@ -25,6 +25,7 @@ VideoViewer::VideoViewer(SOCKET ClientSo
+ 	HttpRequest req(VideoStream);
+ 
+ 	string reqStr;
++	Uri::decode(req.getMethod(), httpReqMethod);
+ 	Uri::decode(req.getPath(), reqStr);
+ 
+ 	string reqUri = reqStr;
+@@ -131,9 +132,14 @@ void VideoViewer::Run()
+ {	
+ 	ReadM3U8();		// parse preliminary
+ 	// successful - send the response to TV
+-	VideoStream << "HTTP/1.1 200 OK\nServer: hlspxd\nContent-Type: application/octet-stream\nConnection : close\n\n";
++	VideoStream << "HTTP/1.1 200 OK\r\nServer: hlspxd\r\nContent-Type: application/octet-stream\r\nConnection : close\r\n\r\n";
+ 	VideoStream.flush();
+ 
++	if (httpReqMethod == "HEAD" || httpReqMethod == "head")
++	{
++		return;
++	}
++
+ 	// find redirections to different resolutions
+ 	vector<StreamInf> streamVec;
+ 
+--- a/videoviewer.h
++++ b/videoviewer.h
+@@ -76,6 +76,7 @@ class VideoViewer
+ {
+ 	socketstream VideoStream;			// output stream
+ 	VideoQuality SessionQuality;		// video quality
++	std::string httpReqMethod;			// HTTP request method
+ 	Uri VideoUri;						// current URI
+ 	HttpClient M3U8Client;				// content server session
+ 	char TsBuf[TS_BUF_LEN];				// output buffer

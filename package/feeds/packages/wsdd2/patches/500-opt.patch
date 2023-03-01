@@ -1,0 +1,20 @@
+--- a/wsd.c
++++ b/wsd.c
+@@ -125,7 +125,7 @@ static void uuid_random(char *uuid, size
+ 
+ static void uuid_endpoint(char uuid[UUIDLEN])
+ {
+-	FILE *fp = fopen("/etc/machine-id", "r");
++	FILE *fp = fopen("/opt/etc/machine-id", "r");
+ 	int c, i = 0;
+ 
+ 	if (!fp) {
+@@ -142,7 +142,7 @@ static void uuid_endpoint(char uuid[UUID
+ 	}
+ 
+ 	if (!fp) {
+-		DEBUG(0, W, "Can't open or file empty, required '/etc/machine-id' or '/proc/sys/kernel/random/boot_id'");
++		DEBUG(0, W, "Can't open or file empty, required '/opt/etc/machine-id' or '/proc/sys/kernel/random/boot_id'");
+ 		return;
+ 	}
+ 

@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "==================================" >> /opt/var/log/tangd.log
+echo `date`: >> /opt/var/log/tangd.log
+/opt/libexec/tangd $1 2>> /opt/var/log/tangd.log

@@ -1,0 +1,11 @@
+--- a/src/file.c
++++ b/src/file.c
+@@ -26,7 +26,7 @@ create_homedir(void)
+ 	char *h, *i;
+ 
+ 	h = getenv("HOME");
+-	i = getenv("IMAPFILTER_HOME");
++	i = "/opt/etc/imapfilter";
+ 
+ 	if (i == NULL)
+ 		n = strlen(h ? h : "") + strlen(h ? "/" : "") +
