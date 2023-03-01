@@ -1,0 +1,34 @@
+--- a/Makefile.sharedlibrary
++++ b/Makefile.sharedlibrary
+@@ -63,7 +63,7 @@ CC ?= gcc
+ CC := $(CC)
+ 
+ .PHONY: all
+-all: libduktape.$(SO_REALNAME_SUFFIX) libduktaped.$(SO_REALNAME_SUFFIX) duktape.pc
++all: libduktape.$(SO_REALNAME_SUFFIX) libduktaped.$(SO_REALNAME_SUFFIX) duktape.pc duk
+ 
+ # If the default duk_config.h is not suitable for the distribution, modify it
+ # before compiling the shared library and copy the same, edited duk_config.h
+@@ -72,10 +72,16 @@ all: libduktape.$(SO_REALNAME_SUFFIX) li
+ libduktape.$(SO_REALNAME_SUFFIX):
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -shared -fPIC -Wall -Wextra -Os -Wl,$(LD_SONAME_ARG),libduktape.$(SO_SONAME_SUFFIX) \
+ 		-o $@ $(DUKTAPE_SRCDIR)/duktape.c
++	ln -s libduktape.so.$(REAL_VERSION) libduktape.so
++	ln -s libduktape.so.$(REAL_VERSION) libduktape.so.$(SONAME_VERSION)
++
+ 
+ libduktaped.$(SO_REALNAME_SUFFIX):
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -shared -fPIC -g -Wall -Wextra -Os -Wl,$(LD_SONAME_ARG),libduktaped.$(SO_SONAME_SUFFIX) \
+ 		-o $@ $(DUKTAPE_SRCDIR)/duktape.c
++	ln -s libduktaped.so.$(REAL_VERSION) libduktaped.so
++	ln -s libduktaped.so.$(REAL_VERSION) libduktaped.so.$(SONAME_VERSION)
++
+ 
+ duktape.pc:
+ 	sed -e "s|@PREFIX@|$(INSTALL_PREFIX)|" \
+@@ -101,4 +107,4 @@ install: libduktape.$(SO_REALNAME_SUFFIX
+ 
+ CCOPTS = -I./examples/cmdline
+ duk:
+-	$(CC) $(CCOPTS) -I$(INSTALL_PREFIX)/include -L$(INSTALL_PREFIX)$(LIBDIR) -Wall -Wextra -Os -o $@ ./examples/cmdline/duk_cmdline.c -lduktape -lm
++	$(CC) $(CFLAGS) -Isrc $(LDFLAGS) -DDUK_CMDLINE_PRINTALERT_SUPPORT -I./extras/print-alert -L. -Wall -Wextra -o $@ ./examples/cmdline/duk_cmdline.c ./extras/print-alert/duk_print_alert.c -lduktape -lm

@@ -1,0 +1,40 @@
+--- a/src/config.c
++++ b/src/config.c
+@@ -365,7 +365,7 @@ static const char *config_def_dpd_idle(v
+ 
+ static const char *config_ca_dir(void)
+ {
+-	return "/etc/ssl/certs";
++	return "/opt/etc/ssl/certs";
+ }
+ 
+ static const char *config_def_auth_mode(void)
+@@ -390,7 +390,7 @@ static const char *config_def_script(voi
+ 
+ static const char *config_def_pid_file(void)
+ {
+-	return "/run/vpnc.pid";
++	return "/opt/var/run/vpnc.pid";
+ }
+ 
+ static const char *config_def_vendor(void)
+@@ -682,7 +682,7 @@ static char *get_config_filename(const c
+ {
+ 	char *realname;
+ 
+-	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
++	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "/opt/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
+ 	return realname;
+ }
+ 
+@@ -927,8 +927,8 @@ void do_config(int argc, char **argv)
+ 	}
+ 
+ 	if (!got_conffile) {
+-		read_config_file("/etc/vpnc/default.conf", config, 1);
+-		read_config_file("/etc/vpnc.conf", config, 1);
++		read_config_file("/opt/etc/vpnc/default.conf", config, 1);
++		read_config_file("/opt/etc/vpnc.conf", config, 1);
+ 	}
+ 
+ 	if (!print_config) {

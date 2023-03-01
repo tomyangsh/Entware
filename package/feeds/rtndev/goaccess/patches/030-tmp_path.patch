@@ -1,0 +1,37 @@
+--- a/src/options.c
++++ b/src/options.c
+@@ -278,7 +278,7 @@ cmd_help (void)
+   "  --date-spec=<date|hr|min>       - Date specificity. Possible values: `date`\n"
+   "                                    (default), `hr` or `min`.\n"
+   "  --db-path=<path>                - Persist data to disk on exit to the given\n"
+-  "                                    path or /tmp as default.\n"
++  "                                    path or /opt/tmp as default.\n"
+   "  --double-decode                 - Decode double-encoded values.\n"
+   "  --enable-panel=<PANEL>          - Enable parsing/displaying the given panel.\n"
+   "  --fname-as-vhost=<regex>        - Use log filename(s) as virtual host(s).\n"
+@@ -302,12 +302,12 @@ cmd_help (void)
+   "  --no-strict-status              - Disable HTTP status code validation.\n"
+   "  --num-tests=<number>            - Number of lines to test. >= 0 (10 default)\n"
+   "  --persist                       - Persist data to disk on exit to the given\n"
+-  "                                    --db-path or to /tmp.\n"
++  "                                    --db-path or to /opt/tmp.\n"
+   "  --process-and-exit              - Parse log and exit without outputting data.\n"
+   "  --real-os                       - Display real OS names. e.g, Windows XP,\n"
+   "                                    Snow Leopard.\n"
+   "  --restore                       - Restore data from disk from the given\n"
+-  "                                    --db-path or from /tmp.\n"
++  "                                    --db-path or from /opt/tmp.\n"
+   "  --sort-panel=PANEL,METRIC,ORDER - Sort panel on initial load. e.g.,\n"
+   "                                    --sort-panel=VISITORS,BY_HITS,ASC.\n"
+   "                                    See manpage for a list of panels/fields.\n"
+--- a/src/gstorage.h
++++ b/src/gstorage.h
+@@ -35,7 +35,7 @@
+ 
+ /* Total number of storage metrics (GSMetric) */
+ #define GSMTRC_TOTAL 19
+-#define DB_PATH "/tmp"
++#define DB_PATH "/opt/tmp"
+ 
+ /* Enumerated Storage Metrics */
+ typedef enum GSMetric_ {

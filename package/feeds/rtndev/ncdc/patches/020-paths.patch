@@ -1,0 +1,11 @@
+--- a/src/db.c
++++ b/src/db.c
+@@ -1443,7 +1443,7 @@ static int db_dir_init() {
+   if(!db_dir && (db_dir = g_getenv("NCDC_DIR")))
+     db_dir = g_strdup(db_dir);
+   if(!db_dir)
+-    db_dir = g_build_filename(g_get_home_dir(), ".ncdc", NULL);
++    db_dir = g_build_filename("/opt/var", "ncdc", NULL);
+ 
+   // try to create it (ignoring errors if it already exists)
+   g_mkdir(db_dir, 0700);

@@ -1,0 +1,13 @@
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -89,8 +89,8 @@ istgtcontrol: $(ISTGTCONTROL)
+ 	$(CC) $(LDFLAGS) -o $@ $(ISTGTCONTROL) $(LIBS)
+ 
+ install: install-dirs
+-	$(INSTALL) -s -m 0755 istgt $(DESTDIR)$(bindir)
+-	$(INSTALL) -s -m 0755 istgtcontrol $(DESTDIR)$(bindir)
++	$(INSTALL) -m 0755 istgt $(DESTDIR)$(bindir)
++	$(INSTALL) -m 0755 istgtcontrol $(DESTDIR)$(bindir)
+ 
+ install-dirs:
+ 	$(MKDIR_P) $(DESTDIR)$(bindir)

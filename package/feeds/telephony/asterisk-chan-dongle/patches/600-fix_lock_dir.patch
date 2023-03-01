@@ -1,0 +1,22 @@
+--- a/chan_dongle.c
++++ b/chan_dongle.c
+@@ -122,7 +122,7 @@ static int lock_build(const char * devna
+ 	#if defined(__FreeBSD__)
+ 	return snprintf(buf, length, "/var/spool/lock/LCK..%s", basename);
+ 	#else
+-	return snprintf(buf, length, "/var/lock/LCK..%s", basename);
++	return snprintf(buf, length, "/opt/var/lock/LCK..%s", basename);
+ 	#endif
+ }
+ 
+--- a/tools/tty.c
++++ b/tools/tty.c
+@@ -47,7 +47,7 @@ static int lock_build(const char * devna
+ 	#if defined(__FreeBSD__)
+ 	return snprintf(buf, length, "/var/spool/lock/LCK..%s", basename);
+ 	#else
+-	return snprintf(buf, length, "/var/lock/LCK..%s", basename);
++	return snprintf(buf, length, "/opt/var/lock/LCK..%s", basename);
+ 	#endif
+ }
+ 

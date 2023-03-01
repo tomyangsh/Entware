@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -223,7 +223,7 @@ AM_CFLAGS += -Wdeclaration-after-stateme
+ 
+ dist_man_MANS = goaccess.1
+ 
+-SUBDIRS = po
++SUBDIRS = 
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 

@@ -1,0 +1,23 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,7 +26,7 @@ option(ENABLE_FULL_DEBUG	"Build with all
+ 
+ # Now CMAKE_INSTALL_PREFIX is a base prefix for everything.
+ if (NOT CONFDIR)
+-	set(CONFDIR "${CMAKE_INSTALL_PREFIX}/etc/msd")
++	set(CONFDIR "${CMAKE_INSTALL_SYSCONFDIR}/msd")
+ endif()
+ 
+ if (NOT RUNDIR)
+@@ -234,9 +234,9 @@ add_custom_target(dist ${CMAKE_CURRENT_S
+ ##################### INSTALLATION #####################################
+ 
+ # Configs
+-install(CODE "FILE(MAKE_DIRECTORY ${CONFDIR})")
++#install(CODE "FILE(MAKE_DIRECTORY ${CONFDIR})")
+ 
+-install_if_not_exists(conf/msd.conf ${CONFDIR} "msd.conf" ".sample")
++install_if_not_exists(conf/msd.conf "${CONFDIR}/msd" "msd.conf" ".sample")
+ 
+ if (CMAKE_SYSTEM_NAME MATCHES "^.*BSD$|DragonFly")
+ 	install_script(os/freebsd/msd "${CMAKE_INSTALL_PREFIX}/etc/rc.d/")

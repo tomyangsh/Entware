@@ -1,0 +1,28 @@
+--- a/stations/WMRUSB/wmrusbprotocol.c
++++ b/stations/WMRUSB/wmrusbprotocol.c
+@@ -69,12 +69,9 @@ static float d2temp( int a, int b )
+ {
+     a &= 0xff;
+     b &= 0xff;
+-    int t = ( b << 8 ) | a;
+-    if( t & 0x8000 )
+-    {
+-        t &= 0x7FFF;
+-        return -( t / 10.0 );
+-    }
++    int t = ((b & 0x0f) << 8) | a;
++    if (b & 0x80)
++        return -(t / 10.0);
+     else
+     {
+         return ( t / 10.0 );
+@@ -200,6 +197,9 @@ static void decodeTemp( unsigned char* p
+             return;
+         }
+ 
++        if (ptr[5] & 0x20)
++            dew = ARCHIVE_VALUE_NULL;
++
+         wmrWork.sensorData.humidity[sensor] = humid;
+         wmrWork.sensorData.temp[sensor]     = temp;
+         wmrWork.sensorData.dewpoint[sensor] = dew;

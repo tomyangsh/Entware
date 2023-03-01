@@ -1,0 +1,14 @@
+--- a/lib/mount_util.c
++++ b/lib/mount_util.c
+@@ -100,9 +100,9 @@ static int add_mount(const char *prognam
+ 
+ 		sigprocmask(SIG_SETMASK, &oldmask, NULL);
+ 		setuid(geteuid());
+-		execle("/bin/mount", "/bin/mount", "--no-canonicalize", "-i",
++		execle("/opt/bin/mount", "/opt/bin/mount", "--no-canonicalize", "-i",
+ 		       "-f", "-t", type, "-o", opts, fsname, mnt, NULL, &env);
+-		fprintf(stderr, "%s: failed to execute /bin/mount: %s\n",
++		fprintf(stderr, "%s: failed to execute /opt/bin/mount: %s\n",
+ 			progname, strerror(errno));
+ 		exit(1);
+ 	}

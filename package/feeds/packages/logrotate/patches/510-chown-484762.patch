@@ -1,0 +1,17 @@
+--- a/logrotate.c
++++ b/logrotate.c
+@@ -571,8 +571,12 @@ static int createOutputFile(const char *
+     if (fchmod(fd, (S_IRUSR | S_IWUSR) & sb->st_mode)) {
+         message(MESS_ERROR, "error setting mode of %s: %s\n",
+                 fileName, strerror(errno));
+-        close(fd);
+-        return -1;
++	if (geteuid() == 0) {
++		/* If run as non-root, we may not be able to duplicate
++		   the ownership of the file. Warn but don't fail. */
++		close(fd);
++		return -1;
++	}
+     }
+ 
+     if (fstat(fd, &sb_create)) {

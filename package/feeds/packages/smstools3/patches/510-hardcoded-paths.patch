@@ -1,0 +1,65 @@
+--- a/src/smsd_cfg.c
++++ b/src/smsd_cfg.c
+@@ -312,14 +312,14 @@ void initcfg()
+   log_unmodified = 0;
+   alarmlevel=LOG_WARNING;
+ 
+-  strcpy(d_spool,"/var/spool/sms/outgoing");
+-  strcpy(d_incoming,"/var/spool/sms/incoming");
++  strcpy(d_spool,"/opt/var/spool/sms/outgoing");
++  strcpy(d_incoming,"/opt/var/spool/sms/incoming");
+   *d_incoming_copy = 0; // 3.1.16beta2.
+   *d_report = 0;
+   *d_report_copy = 0; // 3.1.17.
+   *d_phonecalls = 0;
+   *d_saved = 0;
+-  strcpy(d_checked,"/var/spool/sms/checked");
++  strcpy(d_checked,"/opt/var/spool/sms/checked");
+   d_failed[0]=0;
+   d_failed_copy[0]=0; // 3.1.17.
+   d_sent[0]=0;
+@@ -393,8 +393,8 @@ void initcfg()
+   username[0] = 0;
+   groupname[0] = 0;
+ 
+-  strcpy(infofile, "/var/run/smsd.working");
+-  strcpy(pidfile, "/var/run/smsd.pid");
++  strcpy(infofile, "/opt/var/run/smsd.working");
++  strcpy(pidfile, "/opt/var/run/smsd.pid");
+ 
+   terminal = 0;
+   os_cygwin = 0;
+--- a/src/smsd.c
++++ b/src/smsd.c
+@@ -7667,7 +7667,7 @@ int main(int argc,char** argv)
+     if (p && *p && strlen(p) < sizeof(tmpdir))
+       snprintf(tmpdir, sizeof(tmpdir), "%s", p);
+     else
+-      strcpy(tmpdir, "/tmp");
++      strcpy(tmpdir, "/opt/tmp");
+   }
+ 
+   break_workless_delay = 0;
+--- a/src/smsd_cfg.h
++++ b/src/smsd_cfg.h
+@@ -21,9 +21,9 @@ Either version 2 of the License, or (at
+ #include <signal.h>
+ 
+ #ifndef __FreeBSD__
+-#define DEFAULT_CONFIGFILE "/etc/smsd.conf"
++#define DEFAULT_CONFIGFILE "/opt/etc/smsd.conf"
+ #else
+-#define DEFAULT_CONFIGFILE "%%PREFIX%%/etc/smsd.conf"
++#define DEFAULT_CONFIGFILE "/opt/etc/smsd.conf"
+ #endif
+ 
+ #define DATETIME_DEFAULT "%y-%m-%d %H:%M:%S"
+@@ -34,7 +34,7 @@ Either version 2 of the License, or (at
+ 
+ #define CONCATENATED_DIR_FNAME "%s/%s-concatenated"
+ 
+-#define MM_CORE_FNAME "/tmp/mm_smsd_%i" /* %i is PID */
++#define MM_CORE_FNAME "/opt/tmp/mm_smsd_%i" /* %i is PID */
+ 
+ #define NUMS 64
+ #define SIZE_NUM 16

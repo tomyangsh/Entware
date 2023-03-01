@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -488,7 +488,7 @@ target_compile_definitions(miniupnpc::li
+ add_subdirectory(third-party/jsonsl)
+ add_subdirectory(third-party/wildmat)
+ 
+-tr_add_external_auto_library(DHT dht dht
++tr_add_external_auto_library(DHT libdht dht
+     TARGET dht::dht)
+ 
+ tr_add_external_auto_library(PSL libpsl psl
