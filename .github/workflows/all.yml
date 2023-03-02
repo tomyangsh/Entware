@@ -1,4 +1,4 @@
-name: build transmission
+name: build all
 
 on:
   workflow_dispatch
@@ -18,7 +18,7 @@ jobs:
 
       - name: build
         run: |
-          make V=sc package/transmission/compile
+          make V=sc package/compile
           make V=sc package/index
 
       - name: Upload Built to action
