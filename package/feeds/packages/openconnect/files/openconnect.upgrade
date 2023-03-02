@@ -1,9 +1,0 @@
-/opt/etc/openconnect/user-cert-vpn-*.pem
-/opt/etc/openconnect/user-key-vpn-*.pem
-/opt/etc/openconnect/ca-vpn-*.pem
-/opt/etc/openconnect/pre-init.d/
-/opt/etc/openconnect/connect.d/
-/opt/etc/openconnect/post-connect.d/
-/opt/etc/openconnect/disconnect.d/
-/opt/etc/openconnect/post-disconnect.d/
-/opt/etc/openconnect/reconnect.d/
