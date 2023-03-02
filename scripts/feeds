@@ -429,7 +429,7 @@ sub do_install_src($$) {
 
 		-d "./package/feeds" or mkdir "./package/feeds";
 		-d "./package/feeds/$feed->[1]" or mkdir "./package/feeds/$feed->[1]";
-		system("cp -rl $path ./package/feeds/$feed->[1]/");
+		system("ln -sf ../../../$path ./package/feeds/$feed->[1]/");
 	} else {
 		warn "Package is not valid\n";
 		return 1;
@@ -455,7 +455,7 @@ sub do_install_target($) {
 			return 1;
 		};
 
-		system("cp -rl $path ./target/linux/feeds/");
+		system("ln -sf ../../../$path ./target/linux/feeds/");
 	} else {
 		warn "Target is not valid\n";
 		return 1;

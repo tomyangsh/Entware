@@ -14,12 +14,13 @@ jobs:
 
       - name: prepare
         run: |
+          make package/symlinks
           make toolchain/install
 
       - name: build
         run: |
           make V=sc package/transmission/compile
-          make V=sc package/index
+          make package/index
 
       - name: Upload Built to action
         uses: actions/upload-artifact@v3
