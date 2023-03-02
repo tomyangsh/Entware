@@ -21,8 +21,8 @@ jobs:
           make V=sc package/transmission/compile
           make V=sc package/index
 
-      - name: push
-        run: |
-          git add -f bin/targets/armv7-3.2/generic-glibc/packages/*
-          git commit -m "tr: update"
-          git push
+      - name: Upload Built to action
+        uses: actions/upload-artifact@v3
+        with:
+          name: entware-bin
+          path: bin
