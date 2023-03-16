@@ -1,17 +1,18 @@
---- a/CMakeLists.txt	2023-02-22 17:41:16.000000000 -0500
-+++ b/CMakeLists.txt	2023-02-26 15:38:19.678019237 -0500
-@@ -75,67 +75,9 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fd34f9b8b..c8bbad727 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -75,67 +75,9 @@ tr_auto_option(WITH_SYSTEMD "Add support for systemd startup notification (on sy
  
  set(TR_NAME ${PROJECT_NAME})
  
 -# major.minor.patch[-[beta.N.]dev]+commit_hash
 -# dev builds come between releases, e.g. autobuilds from CI
-+set(TR_USER_AGENT_PREFIX "3.00")
- 
+-
 -# these should be the only five lines you need to change
 -set(TR_VERSION_MAJOR "4")
 -set(TR_VERSION_MINOR "0")
--set(TR_VERSION_PATCH "1")
+-set(TR_VERSION_PATCH "2")
 -set(TR_VERSION_BETA_NUMBER "") # empty string for not beta
 -set(TR_VERSION_DEV FALSE)
 -
@@ -66,6 +67,8 @@
 -    string(APPEND TR_PEER_ID_PREFIX "0")
 -endif()
 -string(APPEND TR_PEER_ID_PREFIX "-")
++set(TR_USER_AGENT_PREFIX "3.00")
++
 +set(TR_PEER_ID_PREFIX "-TR3000-")
  
  set(TR_VCS_REVISION_FILE "${CMAKE_SOURCE_DIR}/REVISION")
