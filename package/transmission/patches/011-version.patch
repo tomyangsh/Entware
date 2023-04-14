@@ -1,56 +1,20 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index fd34f9b8b..c8bbad727 100644
+index e5415b3ac..784a1a0d9 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -75,67 +75,9 @@ tr_auto_option(WITH_SYSTEMD "Add support for systemd startup notification (on sy
- 
- set(TR_NAME ${PROJECT_NAME})
- 
--# major.minor.patch[-[beta.N.]dev]+commit_hash
--# dev builds come between releases, e.g. autobuilds from CI
--
--# these should be the only five lines you need to change
--set(TR_VERSION_MAJOR "4")
--set(TR_VERSION_MINOR "0")
--set(TR_VERSION_PATCH "2")
--set(TR_VERSION_BETA_NUMBER "") # empty string for not beta
--set(TR_VERSION_DEV FALSE)
--
--# derived from above: release type
--if(TR_VERSION_DEV)
--    set(TR_NIGHTLY_RELEASE 1)
--elseif(NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
--    set(TR_BETA_RELEASE 1)
--else()
--    set(TR_STABLE_RELEASE 1)
--endif()
--
--# derived from above: semver version string. https://semver.org/
--# '4.0.0-beta.1'
--# '4.0.0-beta.1.dev' (a dev release between beta 1 and 2)
--# '4.0.0-beta.2'
--# '4.0.0'
--set(TR_SEMVER "${TR_VERSION_MAJOR}.${TR_VERSION_MINOR}.${TR_VERSION_PATCH}")
--if(TR_VERSION_DEV OR NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
--    string(APPEND TR_SEMVER "-")
--    if(NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
--        string(APPEND TR_SEMVER "beta.${TR_VERSION_BETA_NUMBER}")
--    endif()
--    if(TR_VERSION_DEV AND NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
--        string(APPEND TR_SEMVER ".")
--    endif()
--    if(TR_VERSION_DEV)
--        string(APPEND TR_SEMVER "dev")
--    endif()
--endif()
+@@ -113,7 +113,7 @@ if(TR_VERSION_DEV OR NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
+         string(APPEND TR_SEMVER "dev")
+     endif()
+ endif()
 -set(TR_USER_AGENT_PREFIX "${TR_SEMVER}")
--
--# derived from above: peer-id prefix. https://www.bittorrent.org/beps/bep_0020.html
--# chars 4, 5, 6 are major, minor, patch in https://en.wikipedia.org/wiki/Base62
--# char 7 is '0' for a stable release, 'B' for a beta release, or 'Z' for a dev build
--# '-TR400B-' (4.0.0 Beta)
--# '-TR400Z-' (4.0.0 Dev)
--# '-TR4000-' (4.0.0)
++set(TR_USER_AGENT_PREFIX "3.00")
+ 
+ # derived from above: peer-id prefix. https://www.bittorrent.org/beps/bep_0020.html
+ # chars 4, 5, 6 are major, minor, patch in https://en.wikipedia.org/wiki/Base62
+@@ -121,22 +121,7 @@ set(TR_USER_AGENT_PREFIX "${TR_SEMVER}")
+ # '-TR400B-' (4.0.0 Beta)
+ # '-TR400Z-' (4.0.0 Dev)
+ # '-TR4000-' (4.0.0)
 -set(TR_PEER_ID_PREFIX "-TR")
 -set(BASE62 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 -string(SUBSTRING "${BASE62}" "${TR_VERSION_MAJOR}" 1 TMPSTR)
@@ -67,8 +31,6 @@ index fd34f9b8b..c8bbad727 100644
 -    string(APPEND TR_PEER_ID_PREFIX "0")
 -endif()
 -string(APPEND TR_PEER_ID_PREFIX "-")
-+set(TR_USER_AGENT_PREFIX "3.00")
-+
 +set(TR_PEER_ID_PREFIX "-TR3000-")
  
  set(TR_VCS_REVISION_FILE "${CMAKE_SOURCE_DIR}/REVISION")
