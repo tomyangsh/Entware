@@ -4,24 +4,27 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# XXX ext deps 3d-party
+# Entware specific: link libdht statically. It is needed for old kernels.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=transmission
-PKG_VERSION:=4.0.3
+PKG_VERSION:=4.0.6
 PKG_RELEASE:=1
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=6b0e49bbb296f1c84785275b8a8f18b4210180af
-PKG_SOURCE_URL:=https://github.com/transmission/transmission
-PKG_MIRROR_HASH:=2a026640a3880e550885924c6f92a4ea902dda600a2797b051150e4252dd96af
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=https://github.com/transmission/transmission/releases/download/$(PKG_VERSION)/
+PKG_HASH:=2a38fe6d8a23991680b691c277a335f8875bdeca2b97c6b26b598bc9c7b0c45f
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:transmissionbt:transmission
 
+PKG_INSTALL:=1
+PKG_BUILD_DEPENDS:=libb64 node/host
+PKG_BUILD_PARALLEL:=1
+PKG_BUILD_FLAGS:=gc-sections lto
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_LIBCURL_GNUTLS \
 	CONFIG_LIBCURL_MBEDTLS \
@@ -31,6 +34,8 @@ PKG_CONFIG_DEPENDS:= \
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
+#include $(INCLUDE_DIR)/package-seccomp.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/transmission/template
   SUBMENU:=BitTorrent
@@ -38,8 +43,10 @@ define Package/transmission/template
   CATEGORY:=Network
   TITLE:=BitTorrent client
   URL:=https://www.transmissionbt.com
-  DEPENDS:=+libcurl +libevent2 +libminiupnpc +libnatpmp +libstdcpp
-  DEPENDS+=+LIBCURL_NOSSL:libmbedtls +LIBCURL_GNUTLS:libmbedtls
+  DEPENDS:=+libatomic +libcurl +libdeflate +libevent2 \
+	   +libevent2-pthreads +libminiupnpc +libnatpmp +libpthread +libpsl \
+	   +librt +libutp +zlib +LIBCURL_NOSSL:libmbedtls \
+	   +LIBCURL_GNUTLS:libmbedtls +LIBCURL_MBEDTLS:libmbedtls
 endef
 
 define Package/transmission-daemon
@@ -87,39 +94,38 @@ define Package/transmission-daemon/conffiles
 /opt/etc/transmission/settings.json
 endef
 
-TARGET_CFLAGS += -pthread
+TARGET_CFLAGS += -DHAVE_SIZE_T
+TARGET_LDFLAGS += -latomic -Wl,--as-needed
 
 CMAKE_OPTIONS += \
-	-DENABLE_CLI=ON \
-	-DENABLE_DAEMON=ON \
-	-DENABLE_NLS=OFF \
-	-DENABLE_TESTS=OFF \
-	-DENABLE_UTILS=ON \
-	-DENABLE_UTP=ON \
-	-DINSTALL_DOC=OFF \
-	-DENABLE_GTK=OFF \
-	-DENABLE_QT=OFF \
-	-DENABLE_MAC=OFF \
-	-DENABLE_WEB=OFF \
-	-DWITH_KQUEUE=OFF \
-	-DWITH_SYSTEMD=OFF \
-	-DRUN_CLANG_TIDY=OFF \
-	-DUSE_SYSTEM_DEFLATE=OFF \
-	-DUSE_SYSTEM_DHT=OFF \
-	-DUSE_SYSTEM_MINIUPNPC=ON \
-	-DUSE_SYSTEM_NATPMP=ON \
-	-DUSE_SYSTEM_B64=OFF \
-	-DUSE_SYSTEM_PSL=OFF \
+	-DENABLE_CLI:BOOL=YES \
+	-DENABLE_GTK:BOOL=NO \
+	-DENABLE_QT:BOOL=NO \
+	-DENABLE_MAC:BOOL=NO \
+	-DENABLE_TESTS:BOOL=NO \
+	-DENABLE_NLS:BOOL=NO \
+	-DENABLE_UTP:BOOL=YES \
+	-DRUN_CLANG_TIDY:BOOL=NO \
+	-DUSE_SYSTEM_EVENT2:BOOL=YES \
+	-DUSE_SYSTEM_DEFLATE:BOOL=YES \
+	-DUSE_SYSTEM_DHT:BOOL=OFF \
+	-DUSE_SYSTEM_MINIUPNPC:BOOL=YES \
+	-DUSE_SYSTEM_NATPMP:BOOL=YES \
+	-DUSE_SYSTEM_UTP:BOOL=YES \
+	-DUSE_SYSTEM_B64:BOOL=YES \
+	-DUSE_SYSTEM_PSL:BOOL=YES \
+	-DWITH_INOTIFY:BOOL=YES \
+	-DWITH_KQUEUE:BOOL=NO \
+	-DWITH_SYSTEMD:BOOL=NO \
+	-DB64_INCLUDE_DIR=$(STAGING_DIR)/opt/include \
+	-DB64_LIBRARY=$(STAGING_DIR)/opt/lib/libb64.a \
+	-DUTP_INCLUDE_DIR=$(STAGING_DIR)/opt/include \
+	-DUTP_LIBRARY=$(STAGING_DIR)/opt/lib/libutp.so \
 	$(if $(CONFIG_LIBCURL_NOSSL),-DWITH_CRYPTO=mbedtls) \
 	$(if $(CONFIG_LIBCURL_GNUTLS),-DWITH_CRYPTO=mbedtls) \
 	$(if $(CONFIG_LIBCURL_MBEDTLS),-DWITH_CRYPTO=mbedtls) \
 	$(if $(CONFIG_LIBCURL_OPENSSL),-DWITH_CRYPTO=openssl) \
 	$(if $(CONFIG_LIBCURL_WOLFSSL),-DWITH_CRYPTO=wolfssl)
-
-define Build/Prepare
-	$(call Build/Prepare/Default)
-	mv $(PKG_BUILD_DIR)/third-party/dht $(PKG_BUILD_DIR)/third-party/libdht
-endef
 
 define Package/transmission-daemon/install
 	$(INSTALL_DIR) $(1)/opt/bin
@@ -135,8 +141,10 @@ endef
 
 define Package/transmission-cli/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/opt/bin/transmission-{cli,create,edit,show} \
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/transmission-cli \
+			$(PKG_INSTALL_DIR)/opt/bin/transmission-create \
+			$(PKG_INSTALL_DIR)/opt/bin/transmission-edit \
+			$(PKG_INSTALL_DIR)/opt/bin/transmission-show \
 			$(1)/opt/bin/
 endef
 
