@@ -1,9 +1,10 @@
-commit 2388b119de9279d7adaa525c7ba502fcae1fe187 (HEAD -> master, origin/master, origin/main, origin/HEAD)
+commit 07ea72976168461d9a243a4201a8d1e6cf529715 (HEAD -> master, origin/master, origin/main, origin/HEAD)
 Author: Nick Hainke <vincent@systemli.org>
-Date:   Tue May 23 16:47:42 2023 +0200
+Date:   Tue Feb 6 12:26:33 2024 +0100
 
-    ramips: mark patches accepted upstream
+    toolchain: binutils: add support for version 2.42
     
-    Add kernel tags to the patches that got accepted upstream.
+    Release Notes:
+    https://lists.gnu.org/archive/html/info-gnu/2024-01/msg00016.html
     
     Signed-off-by: Nick Hainke <vincent@systemli.org>

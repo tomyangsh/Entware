@@ -2,13 +2,13 @@
 #
 # Copyright (C) 2006-2021 OpenWrt.org
 #
-# Entware specific: postinst/prerm
+# Entware specific: postinst/prerm; no jsonfilter as deps; no configs
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=busybox
 PKG_VERSION:=1.36.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1c
 PKG_FLAGS:=essential
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
@@ -46,7 +46,7 @@ define Package/busybox/Default
   MAINTAINER:=Felix Fietkau <nbd@nbd.name>
   TITLE:=Core utilities for embedded Linux
   URL:=http://busybox.net/
-  DEPENDS:=+BUSYBOX_CONFIG_PAM:libpam +BUSYBOX_CONFIG_NTPD:jsonfilter
+  DEPENDS:=+BUSYBOX_CONFIG_PAM:libpam #+BUSYBOX_CONFIG_NTPD:jsonfilter
   USERID:=ntp=123:ntp=123
 endef
 
@@ -85,12 +85,12 @@ define Package/busybox/conffiles/crond
 endef
 endif
 
-define Package/busybox/conffiles
-$(Package/busybox/conffiles/syslog)
-$(Package/busybox/conffiles/crond)
-endef
+#define Package/busybox/conffiles
+#$(Package/busybox/conffiles/syslog)
+#$(Package/busybox/conffiles/crond)
+#endef
 
-Package/busybox-selinux/conffiles = $(Package/busybox/conffiles)
+#Package/busybox-selinux/conffiles = $(Package/busybox/conffiles)
 
 ifndef CONFIG_USE_MUSL
 LDLIBS:=m crypt
@@ -138,17 +138,10 @@ define Build/Compile
 endef
 
 define Package/busybox/install
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/{bin,sbin}
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/busybox $(1)/opt/bin/
-	chmod u+s $(1)/opt/bin/busybox
 	$(INSTALL_DIR) $(1)/opt/share
-	(cd $(PKG_INSTALL_DIR); \
-	    find ./opt -lname "*" | sed "s|^./opt/||g" > $(1)/opt/share/busybox_applets.lst.dist)
-ifneq ($(CONFIG_BUSYBOX_$(BUSYBOX_SYM)_CROND),)
-	$(INSTALL_BIN) ./files/S10crond $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/var/spool/cron/crontabs
-endif
+	$(FIND) $(PKG_INSTALL_DIR) -lname "*" | sed "s|$(PKG_INSTALL_DIR)/opt/||g" > $(1)/opt/share/busybox_applets.lst.dist
 endef
 
 # The postinst & prerm scripts will work only when busybox has readlink applet.
@@ -180,9 +173,6 @@ do
     if [ ! -e $$applet ]
     then
        /opt/bin/busybox ln -s /opt/bin/busybox $$applet
-         if ! grep -qF -- "/opt/$$applet" /opt/lib/opkg/info/busybox.list; then
-           echo "/opt/$$applet" >> /opt/lib/opkg/info/busybox.list
-         fi
     else
        echo "Warning: '/opt/$$applet' is already exists, skipping."
     fi
@@ -191,12 +181,6 @@ endef
 
 define Package/busybox/prerm
 #!/opt/bin/busybox sh
-
-/opt/bin/busybox cat > /opt/lib/opkg/info/busybox.list <<EOF
-/opt/lib/upgrade/keep.d/busybox
-/opt/lib/opkg/info/busybox.list
-/opt/bin/busybox
-EOF
 
 bb_fc=`/opt/bin/busybox readlink -f /opt/bin/busybox`
 for file in /opt/bin/*; do

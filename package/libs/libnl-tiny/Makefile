@@ -13,9 +13,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/libnl-tiny.git
-PKG_SOURCE_DATE:=2023-04-02
-PKG_SOURCE_VERSION:=11b7c5f0745af2637b48131287f28689bb80ed3e
-PKG_MIRROR_HASH:=9bcae026ad1fde81865ea113d24bbc70c2bd1945655d51cd00181c41b70570d2
+PKG_SOURCE_DATE:=2023-12-05
+PKG_SOURCE_VERSION:=965c4bf49658342ced0bd6e7cb069571b4a1ddff
+PKG_MIRROR_HASH:=93596c2686926a470b6bf322f6c166a420a08abe1ea715b4ae8c9df3de00eb28
 CMAKE_INSTALL:=1
 
 PKG_LICENSE:=LGPL-2.1
@@ -28,7 +28,7 @@ define Package/libnl-tiny
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=netlink socket library
-  ABI_VERSION:=$(PKG_SOURCE_DATE)
+  ABI_VERSION:=1
 endef
 
 define Package/libnl-tiny/description
@@ -42,13 +42,13 @@ endif
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig $(1)/opt/include/libnl-tiny
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/libnl-tiny/* $(1)/opt/include/libnl-tiny
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libnl-tiny.so $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnl-tiny.so* $(1)/opt/lib/
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/libnl-tiny.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libnl-tiny/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libnl-tiny.so $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnl-tiny.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libnl-tiny))

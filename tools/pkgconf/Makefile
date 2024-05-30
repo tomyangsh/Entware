@@ -7,11 +7,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pkgconf
-PKG_VERSION:=1.9.5
+PKG_VERSION:=2.1.1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://distfiles.dereferenced.org/pkgconf
-PKG_HASH:=1ac1656debb27497563036f7bffc281490f83f9b8457c0d60bcfb638fb6b6171
+PKG_HASH:=3a224f2accf091b77a5781316e27b9ee3ba82c083cc2e539e08940b68a44fec5
 
 PKG_CPE_ID:=cpe:/a:pkgconf:pkgconf
 

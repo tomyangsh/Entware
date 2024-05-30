@@ -50,6 +50,7 @@ space:= $(empty) $(empty)
 path:=$(subst :,$(space),$(PATH))
 path:=$(filter-out .%,$(path))
 path:=$(subst $(space),:,$(path))
+export ORIG_PATH:=$(if $(ORIG_PATH),$(ORIG_PATH),$(PATH))
 export PATH:=$(path)
 export STAGING_DIR_HOST:=$(if $(STAGING_DIR),$(abspath $(STAGING_DIR)/../host),$(TOPDIR)/staging_dir/host)
 
@@ -211,7 +212,7 @@ prereq:: prepare-tmpinfo .config
 check: .config FORCE
 	@+$(NO_TRACE_MAKE) -r -s $@ QUIET= V=s
 
-val.%: FORCE
+val.% var.%: FORCE
 	@+$(NO_TRACE_MAKE) -r -s $@ QUIET= V=s
 
 WARN_PARALLEL_ERROR = $(if $(BUILD_LOG),,$(and $(filter -j,$(MAKEFLAGS)),$(findstring s,$(OPENWRT_VERBOSE))))
