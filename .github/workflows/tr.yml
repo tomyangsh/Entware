@@ -11,7 +11,7 @@ jobs:
 
       - name: prepare
         run: |
-          apt install python2.7
+          sudo apt install python2.7
           make package/symlinks
           make toolchain/install
 
