@@ -6,10 +6,18 @@
 ifneq ($(__target_inc),1)
 __target_inc=1
 
-# default device type
+
+##@
+# @brief Default device type ( basic | nas | router ).
+##
 DEVICE_TYPE?=router
 
-# Default packages - the really basic set
+##@
+# @brief Default packages.
+#
+# The really basic set. Additional packages are added based on @DEVICE_TYPE and
+# @CONFIG_* values.
+##
 DEFAULT_PACKAGES:=\
 	dropbear \
 	entware-opt \
@@ -18,27 +26,13 @@ DEFAULT_PACKAGES:=\
 	libgcc \
 	opkg
 
-ifneq ($(CONFIG_SELINUX),)
-DEFAULT_PACKAGES+=busybox-selinux procd-selinux
-else
-DEFAULT_PACKAGES+=busybox
-endif
-
-# Entware specific: unused
-# include ujail on systems with enough storage
-#ifeq ($(CONFIG_SMALL_FLASH),)
-#DEFAULT_PACKAGES+=procd-ujail
-#endif
-
-# Entware specific: unused
-# include seccomp ld-preload hooks if kernel supports it
-#ifneq ($(CONFIG_SECCOMP),)
-#DEFAULT_PACKAGES+=procd-seccomp
-#endif
-
-# For the basic set
+##@
+# @brief Default packages for @DEVICE_TYPE basic.
+##
 DEFAULT_PACKAGES.basic:=
-# For nas targets
+##@
+# @brief Default packages for @DEVICE_TYPE nas.
+##
 DEFAULT_PACKAGES.nas:=\
 	block-mount \
 	fdisk \
@@ -249,6 +243,11 @@ ifeq ($(DUMP),1)
     CPU_TYPE ?= riscv64
     CPU_CFLAGS_riscv64:=-mabi=lp64d -march=rv64imafdc
   endif
+  ifeq ($(ARCH),loongarch64)
+    CPU_TYPE ?= generic
+    CPU_CFLAGS := -O2 -pipe
+    CPU_CFLAGS_generic:=-march=loongarch64
+  endif
   ifneq ($(CPU_TYPE),)
     ifndef CPU_CFLAGS_$(CPU_TYPE)
       $(warning CPU_TYPE "$(CPU_TYPE)" doesn't correspond to a known type)
@@ -301,7 +300,15 @@ ifeq ($(DUMP),1)
     ifneq ($(CONFIG_CPU_MIPS32_R2),)
       FEATURES += mips16
     endif
-    FEATURES += $(foreach v,6 7,$(if $(CONFIG_CPU_V$(v)),arm_v$(v)))
+    ifneq ($(CONFIG_CPU_V6),)
+      FEATURES += arm_v6
+    endif
+    ifneq ($(CONFIG_CPU_V6K),)
+      FEATURES += arm_v6
+    endif
+    ifneq ($(CONFIG_CPU_V7),)
+      FEATURES += arm_v7
+    endif
 
     # remove duplicates
     FEATURES:=$(sort $(FEATURES))
@@ -335,6 +342,7 @@ define BuildTargets/DumpCurrent
 	 echo 'Target-Description:'; \
 	 echo "$$$$DESCRIPTION"; \
 	 echo '@@'; \
+	 $(if $(DEFAULT_PROFILE),echo 'Target-Default-Profile: $(DEFAULT_PROFILE)';) \
 	 echo 'Default-Packages: $(DEFAULT_PACKAGES) $(call extra_packages,$(DEFAULT_PACKAGES))'; \
 	 $(DUMPINFO)
 	$(if $(CUR_SUBTARGET),$(SUBMAKE) -r --no-print-directory -C image -s DUMP=1 SUBTARGET=$(CUR_SUBTARGET))

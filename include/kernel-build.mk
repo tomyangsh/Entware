@@ -49,7 +49,7 @@ endif
 define Download/git-kernel
   URL:=$(call qstrip,$(CONFIG_KERNEL_GIT_CLONE_URI))
   PROTO:=git
-  VERSION:=$(CONFIG_KERNEL_GIT_REF)
+  SOURCE_VERSION:=$(CONFIG_KERNEL_GIT_REF)
   FILE:=$(LINUX_SOURCE)
   SUBDIR:=linux-$(LINUX_VERSION)
   OPTS:=$(KERNEL_GIT_OPTS)
@@ -152,7 +152,11 @@ define BuildKernel
   download: $(if $(LINUX_SITE),$(DL_DIR)/$(LINUX_SOURCE))
   prepare: $(STAMP_PREPARED)
   compile: $(LINUX_DIR)/.modules
-	$(MAKE) -C image compile TARGET_BUILD=
+	+$(MAKE) -C image compile TARGET_BUILD=
+
+  dtb: $(STAMP_CONFIGURED)
+	$(_SINGLE)$(KERNEL_MAKE) scripts_dtc
+	$(MAKE) -C image compile-dtb TARGET_BUILD=
 
   oldconfig menuconfig nconfig xconfig: $(STAMP_PREPARED) $(STAMP_CHECKED) FORCE
 	rm -f $(LINUX_DIR)/.config.prev
