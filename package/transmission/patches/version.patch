@@ -1,0 +1,50 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d70078bc1..64b6cd814 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -126,7 +126,7 @@ if(TR_VERSION_DEV OR NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
+         string(APPEND TR_SEMVER "dev")
+     endif()
+ endif()
+-set(TR_USER_AGENT_PREFIX "${TR_SEMVER}")
++set(TR_USER_AGENT_PREFIX "4.0.5")
+ 
+ # derived from above: peer-id prefix. https://www.bittorrent.org/beps/bep_0020.html
+ # chars 4, 5, 6 are major, minor, patch in https://en.wikipedia.org/wiki/Base62
+@@ -134,22 +134,7 @@ set(TR_USER_AGENT_PREFIX "${TR_SEMVER}")
+ # '-TR400B-' (4.0.0 Beta)
+ # '-TR400Z-' (4.0.0 Dev)
+ # '-TR4000-' (4.0.0)
+-set(TR_PEER_ID_PREFIX "-TR")
+-set(BASE62 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+-string(SUBSTRING "${BASE62}" "${TR_VERSION_MAJOR}" 1 TMPSTR)
+-string(APPEND TR_PEER_ID_PREFIX "${TMPSTR}")
+-string(SUBSTRING "${BASE62}" "${TR_VERSION_MINOR}" 1 TMPSTR)
+-string(APPEND TR_PEER_ID_PREFIX "${TMPSTR}")
+-string(SUBSTRING "${BASE62}" "${TR_VERSION_PATCH}" 1 TMPSTR)
+-string(APPEND TR_PEER_ID_PREFIX "${TMPSTR}")
+-if(TR_VERSION_DEV)
+-    string(APPEND TR_PEER_ID_PREFIX "Z")
+-elseif(NOT "${TR_VERSION_BETA_NUMBER}" STREQUAL "")
+-    string(APPEND TR_PEER_ID_PREFIX "B")
+-else()
+-    string(APPEND TR_PEER_ID_PREFIX "0")
+-endif()
+-string(APPEND TR_PEER_ID_PREFIX "-")
++set(TR_PEER_ID_PREFIX "-TR4050-")
+ 
+ set(TR_VCS_REVISION_FILE "${CMAKE_SOURCE_DIR}/REVISION")
+ 
+diff --git a/libtransmission/peer-msgs.cc b/libtransmission/peer-msgs.cc
+index eddaf175f..4a11580db 100644
+--- a/libtransmission/peer-msgs.cc
++++ b/libtransmission/peer-msgs.cc
+@@ -907,7 +907,7 @@ void sendLtepHandshake(tr_peerMsgsImpl* msgs)
+ 
+     if (version_quark == 0)
+     {
+-        version_quark = tr_quark_new(TR_NAME " " USERAGENT_PREFIX);
++        version_quark = tr_quark_new("想日可乐");
+     }
+ 
+     logtrace(msgs, "sending an ltep handshake");
